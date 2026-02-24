@@ -1,283 +1,201 @@
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Footer from "../components/Footer/Footer";
 import Nav_bar from "../components/Nav_bar/Nav_bar";
-import blogs from "../data/Data";
-import { images } from "../constants";
-import { Link } from "react-router-dom";
-
-
+import { getProductById, getFeaturedProducts } from "../data/products";
+import PageWrapper from "../components/ui/PageWrapper";
+import Container from "../components/ui/Container";
+import Section from "../components/ui/Section";
+import ScrollReveal from "../components/ui/ScrollReveal";
+import { useCart } from "../components/cartProvider/CartProvider";
+import CartModal from "../components/cartProvider/cartmodal";
+import { useState } from "react";
 
 function Details() {
-    const { id } = useParams()
+    const { id } = useParams();
+    const product = getProductById(id);
+    const featured = getFeaturedProducts().filter(p => p.id !== Number(id)).slice(0, 4);
 
-    const pruduct = blogs.find((p) => (p.id === Number(id)))
+    const [quantity, setQuantity] = useState(1);
+    const [showModal, setShowModal] = useState(false);
+    const { addToCart } = useCart();
 
-    if (!pruduct) { return (
-        <p>pruduct not found</p>
-    )
-        
+    if (!product) {
+        return (
+            <PageWrapper>
+                <Nav_bar />
+                <Section>
+                    <Container>
+                        <div className="text-center py-20">
+                            <h1 className="heading-1 mb-4">Product Not Found</h1>
+                            <p className="text-body mx-auto mb-6">The product you're looking for doesn't exist.</p>
+                            <Link to="/Shop" className="btn btn-primary">Back to Shop</Link>
+                        </div>
+                    </Container>
+                </Section>
+                <Footer />
+            </PageWrapper>
+        );
     }
 
+    const handleAddToCart = () => {
+        // Add multiple quantity by calling loop, or optimally modifying addToCart to accept quantity.
+        // For now, CartContext addToCart just adds 1, so we loop or we pass object. 
+        // Wait, the standard let's just add the product once for now or update it.
+        // In CartProvider, addToCart does: `return [...prevCart, { ...product, quantity: 1 }]`
+        // We'll just call it `quantity` times.
+        for (let i = 0; i < quantity; i++) {
+            addToCart(product);
+        }
+        setShowModal(true);
+    };
 
     return (
-        <div>
+        <PageWrapper>
+            {showModal && <CartModal product={product} onClose={() => setShowModal(false)} />}
             <Nav_bar />
 
-            <div className="container mx-auto px-4 py-8">
-                {/* Breadcrumb */}
-                <div className="mb-8 text-sm text-gray-600">
-                    <Link to="/" className="hover:text-gray-900">Home</Link>
-                    <span className="mx-2">›</span>
-                    <Link to="/blog" className="hover:text-gray-900">News</Link>
-                    <span className="mx-2">›</span>
-                    <span className="text-gray-900">{pruduct.title}</span>
-                </div>
+            <Section className="!pt-8 md:!pt-12">
+                <Container>
+                    {/* Breadcrumb */}
+                    <ScrollReveal>
+                        <nav className="mb-8 text-sm text-[var(--color-text-muted)]">
+                            <Link to="/" className="hover:text-[var(--color-text-primary)] transition-colors">Home</Link>
+                            <span className="mx-2">›</span>
+                            <Link to="/Shop" className="hover:text-[var(--color-text-primary)] transition-colors">Shop</Link>
+                            <span className="mx-2">›</span>
+                            <span className="text-[var(--color-text-primary)]">{product.title}</span>
+                        </nav>
+                    </ScrollReveal>
 
-                <div className="flex flex-col lg:flex-row gap-8">
+                    <div className="flex flex-col lg:flex-row gap-10 lg:gap-14">
 
-                    {/* Left Side - Blog Detail */}
-                    <div className="w-full lg:w-2/3">
-
-                        {/* Blog Image */}
-                        <div className="mb-8">
-                            <img
-                                src={pruduct.image}
-                                alt={pruduct.title}
-                                className="w-full h-64 md:h-96 lg:h-[500px] object-cover rounded-lg"
-                            />
+                        {/* Image Gallery Area */}
+                        <div className="w-full lg:w-1/2 shrink-0">
+                            <ScrollReveal>
+                                <div className="bg-[var(--color-surface-subtle)] rounded-[var(--radius-xl)] overflow-hidden">
+                                    <img
+                                        src={product.img}
+                                        alt={product.title}
+                                        className="w-full h-auto object-cover aspect-[3/4]"
+                                    />
+                                </div>
+                            </ScrollReveal>
                         </div>
 
-                        {/* Blog Title */}
-                        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                            {pruduct.title}
-                        </h1>
+                        {/* Product Info */}
+                        <div className="flex-1 py-4">
+                            <ScrollReveal delay={0.05}>
+                                <h1 className="text-2xl md:text-3xl font-normal text-gray-900 mb-4">{product.title}</h1>
 
-                        {/* Blog Meta */}
-                        <div className="flex flex-wrap items-center text-sm text-gray-500 mb-6 gap-1">
-                            <span>{pruduct.p1.split('|')[0].trim()}</span>
-                            <span className="mx-2">|</span>
-                            <span>{pruduct.p1.split('|')[1].trim()}</span>
-                            <span className="mx-2">|</span>
-                            <Link to="/" className="hover:text-red-500">{pruduct.b1}</Link>
-                            <span>,</span>
-                            <Link to="/" className="hover:text-red-500">{pruduct.b2}</Link>
-                            <span className="mx-2">|</span>
-                            <span>{pruduct.p1.split('|')[3].trim()}</span>
-                        </div>
+                                <div className="flex items-center gap-4 mb-6 text-xl">
+                                    {product.oldPrice ? (
+                                        <>
+                                            <span className="text-[var(--color-text-muted)] line-through">{product.oldPrice}</span>
+                                            <span className="text-[var(--color-brand)] font-medium">{product.price}</span>
+                                        </>
+                                    ) : (
+                                        <span className="font-medium text-gray-900">{product.price}</span>
+                                    )}
+                                </div>
 
-                        {/* Blog Content */}
-                        <div className="prose max-w-none mb-8">
-                            <p className="text-gray-700 leading-relaxed mb-4">
-                                {pruduct.p2}
-                            </p>
+                                <p className="text-gray-500 text-sm leading-relaxed mb-8">
+                                    Nulla eget sem vitae eros pharetra viverra. Nam vitae luctus ligula. Mauris consequat ornare feugiat.
+                                </p>
+                            </ScrollReveal>
 
-                            <p className="text-gray-700 leading-relaxed mb-4">
-                                {pruduct.p3}
-                            </p>
-                        </div>
+                            <ScrollReveal delay={0.1}>
+                                <div className="space-y-6 mb-10">
+                                    {/* Size */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">Size</label>
+                                        <select className="input w-full max-w-xs">
+                                            <option>Choose an option</option>
+                                            <option>Size S</option>
+                                            <option>Size M</option>
+                                            <option>Size L</option>
+                                            <option>Size XL</option>
+                                        </select>
+                                    </div>
 
-                        {/* Tags Cloud */}
-                        <div className="mb-12">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4">{pruduct.Tags}</h3>
-                            <div className="flex flex-wrap gap-2">
-                                <button className="px-4 py-2 bg-gray-100 text-gray-700 text-sm rounded-full hover:bg-red-500 hover:text-white transition-colors">
-                                    {pruduct.b1}
-                                </button>
-                                <button className="px-4 py-2 bg-gray-100 text-gray-700 text-sm rounded-full hover:bg-red-500 hover:text-white transition-colors">
-                                    {pruduct.b2}
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Comments Section */}
-                        <div className="border-t pt-8">
-                            <h3 className="text-xl font-bold text-gray-900 mb-6">
-                                {pruduct.p1.split('|')[3].trim().toUpperCase()} TO SHOW
-                            </h3>
-
-                            {/* Show comment only if there are comments */}
-                            {pruduct.p1.includes('1 Comments') && (
-                                <div className="flex gap-4 mb-8">
-                                    <div className="w-12 h-12 rounded-full bg-gray-300 flex-shrink-0"></div>
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span className="font-bold text-gray-900">test name</span>
-                                            <span className="text-sm text-gray-500">/ Jan 11, 2018</span>
-                                            <Link to="/" className="text-sm text-gray-600 hover:text-red-500">Reply</Link>
-                                        </div>
-                                        <p className="text-gray-700">test message</p>
+                                    {/* Color */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">Color</label>
+                                        <select className="input w-full max-w-xs">
+                                            <option>Choose an option</option>
+                                            <option>Gray</option>
+                                            <option>Dark Blue</option>
+                                        </select>
                                     </div>
                                 </div>
-                            )}
+                            </ScrollReveal>
 
-                            {/* Leave Comment Form */}
-                            <div className="mt-12">
-                                <h3 className="text-xl font-bold text-gray-900 mb-4">{pruduct.comment.toUpperCase()}</h3>
-                                <p className="text-sm text-gray-600 mb-6">
-                                    {pruduct.titlecomment}
-                                </p>
-
-                                <form className="space-y-4">
-                                    {/* Message */}
-                                    <div>
-                                        <textarea
-                                            placeholder="Message"
-                                            rows="6"
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-400 resize-none"
-                                        ></textarea>
-                                    </div>
-
-                                    {/* Name */}
-                                    <div>
-                                        <input
-                                            type="text"
-                                            placeholder="Your Name"
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-400"
-                                        />
-                                    </div>
-
-                                    {/* Email */}
-                                    <div>
-                                        <input
-                                            type="email"
-                                            placeholder="Email address"
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-400"
-                                        />
-                                    </div>
-
-                                    {/* Submit Button */}
-                                    <div>
+                            {/* Add to Cart Actions */}
+                            <ScrollReveal delay={0.15}>
+                                <div className="flex flex-wrap items-center gap-4 py-8 border-y border-gray-200">
+                                    <div className="flex items-center border border-gray-300 rounded-[var(--radius-md)]">
                                         <button
-                                            type="submit"
-                                            className="bg-black text-white px-8 py-3 rounded-full hover:bg-gray-800 transition-colors"
+                                            onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                            className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-black transition-colors"
                                         >
-                                            {pruduct.post}
+                                            -
+                                        </button>
+                                        <div className="w-12 h-10 flex items-center justify-center text-sm font-medium border-x border-gray-300 bg-gray-50">
+                                            {quantity}
+                                        </div>
+                                        <button
+                                            onClick={() => setQuantity(quantity + 1)}
+                                            className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-black transition-colors"
+                                        >
+                                            +
                                         </button>
                                     </div>
 
-                                    <p className="text-sm text-gray-500 italic">
-                                        {pruduct.lastcomment}
-                                    </p>
-                                </form>
-                            </div>
-                        </div>
+                                    <button
+                                        onClick={handleAddToCart}
+                                        className="btn btn-primary px-8"
+                                    >
+                                        ADD TO CART
+                                    </button>
+                                </div>
+                            </ScrollReveal>
 
+                            <ScrollReveal delay={0.2}>
+                                <div className="mt-8 space-y-2 text-sm text-gray-500">
+                                    <p><span className="text-gray-900 font-medium">SKU:</span> {product.sku}</p>
+                                    <p><span className="text-gray-900 font-medium">Categories:</span> {product.category}</p>
+                                </div>
+                            </ScrollReveal>
+                        </div>
                     </div>
 
-                    {/* Right Side - Sidebar */}
-                    <aside className="w-full lg:w-1/3">
-
-                        {/* Search Box */}
-                        <div className="mb-8">
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    placeholder="Search all articles..."
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-400"
-                                />
-                                <button className="absolute right-3 top-1/2 -translate-y-1/2">
-                                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                </button>
-                            </div>
+                    {/* Featured / Related Products */}
+                    <div className="mt-24">
+                        <ScrollReveal>
+                            <h3 className="text-xl font-medium text-center mb-10 uppercase tracking-widest">Related Products</h3>
+                        </ScrollReveal>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {featured.map((p, i) => (
+                                <ScrollReveal key={p.id} delay={i * 0.05}>
+                                    <Link to={`/Details/${p.id}`} className="block group">
+                                        <div className="relative bg-[var(--color-surface-subtle)] overflow-hidden rounded-[var(--radius-lg)] aspect-[3/4] mb-4">
+                                            <img
+                                                src={p.img}
+                                                alt={p.title}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                        </div>
+                                        <h4 className="text-sm font-medium text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)] transition-colors">{p.title}</h4>
+                                        <p className="mt-1 text-sm font-medium text-gray-900">{p.price}</p>
+                                    </Link>
+                                </ScrollReveal>
+                            ))}
                         </div>
-
-                        {/* Featured Products */}
-                        <div className="mb-8">
-                            <h3 className="text-xl font-bold text-gray-900 mb-6">Featured Products</h3>
-
-                            <div className="space-y-4">
-                                {/* Product 1 */}
-                                <Link to="/product/1" className="flex gap-4 hover:opacity-80 transition-opacity">
-                                    <img
-                                        src={images.blog.blog1}
-                                        alt="Product"
-                                        className="w-20 h-24 object-cover rounded"
-                                    />
-                                    <div className="flex-1">
-                                        <h4 className="text-sm text-gray-900 mb-2">Boxy7 T-Shirt with Roll Sleeve</h4>
-                                        <p className="text-gray-600 font-medium">$20.00</p>
-                                    </div>
-                                </Link>
-
-                                {/* Product 2 */}
-                                <Link to="/product/2" className="flex gap-4 hover:opacity-80 transition-opacity">
-                                    <img
-                                        src={images.blog.blog1}
-                                        alt="Product"
-                                        className="w-20 h-24 object-cover rounded"
-                                    />
-                                    <div className="flex-1">
-                                        <h4 className="text-sm text-gray-900 mb-2">Boxy6 T-Shirt with Roll Sleeve</h4>
-                                        <p className="text-gray-600 font-medium">$20.00</p>
-                                    </div>
-                                </Link>
-
-                                {/* Product 3 */}
-                                <Link to="/" className="flex gap-4 hover:opacity-80 transition-opacity">
-                                    <img
-                                        src={images.blog.blog1}
-                                        alt="Product"
-                                        className="w-20 h-24 object-cover rounded"
-                                    />
-                                    <div className="flex-1">
-                                        <h4 className="text-sm text-gray-900 mb-2">Boxy5 T-Shirt with Roll Sleeve</h4>
-                                        <p className="text-gray-600 font-medium">$20.00</p>
-                                    </div>
-                                </Link>
-
-                                {/* Product 4 */}
-                                <Link to="/" className="flex gap-4 hover:opacity-80 transition-opacity">
-                                    <img
-                                        src={images.blog.blog1}
-                                        alt="Product"
-                                        className="w-20 h-24 object-cover rounded"
-                                    />
-                                    <div className="flex-1">
-                                        <h4 className="text-sm text-gray-900 mb-2">Boxy4 T-Shirt with Roll Sleeve</h4>
-                                        <p className="text-gray-600 font-medium">$20.00</p>
-                                    </div>
-                                </Link>
-
-                                {/* Product 5 */}
-                                <Link to="/" className="flex gap-4 hover:opacity-80 transition-opacity">
-                                    <img
-                                        src={images.blog.blog1}
-                                        alt="Product"
-                                        className="w-20 h-24 object-cover rounded"
-                                    />
-                                    <div className="flex-1">
-                                        <h4 className="text-sm text-gray-900 mb-2">Boxy3 T-Shirt with Roll Sleeve</h4>
-                                        <p className="text-sm text-gray-600 line-through">$30.00</p>
-                                        <p className="text-red-500 font-medium">$20.00</p>
-                                    </div>
-                                </Link>
-                            </div>
-                        </div>
-
-                        {/* Tags Cloud */}
-                        <div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-6">Tags Cloud</h3>
-                            <div className="flex flex-wrap gap-2">
-                                <button className="px-4 py-2 bg-gray-100 text-gray-700 text-sm rounded-full hover:bg-red-500 hover:text-white transition-colors">
-                                    {pruduct.b1}
-                                </button>
-                                <button className="px-4 py-2 bg-gray-100 text-gray-700 text-sm rounded-full hover:bg-red-500 hover:text-white transition-colors">
-                                    {pruduct.b2}
-                                </button>
-                            </div>
-                        </div>
-
-                    </aside>
-
-                </div>
-            </div>
-
+                    </div>
+                </Container>
+            </Section>
 
             <Footer />
-
-        </div>
+        </PageWrapper>
     );
 }
 

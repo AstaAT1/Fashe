@@ -1,47 +1,66 @@
 import { Link } from "react-router-dom";
 import Footer from "../Footer/Footer";
 import Nav_bar from "../Nav_bar/Nav_bar";
-import { IoChevronForwardSharp } from "react-icons/io5";
-
+import PageWrapper from "../ui/PageWrapper";
+import Container from "../ui/Container";
+import Section from "../ui/Section";
+import ScrollReveal from "../ui/ScrollReveal";
 
 function Forgotpasswor() {
     return (
-        <div>
+        <PageWrapper>
             <Nav_bar />
-            <div className="p-10 flex flex-col gap-y-10">
-                <div className="flex gap-2 items-center">
-                    <Link to={"/"}><a className="flex items-center hover:text-[#e65540]" href="">Home <IoChevronForwardSharp /></a></Link>
 
-                    <a className="hover:text-[#e65540]" href="">Account</a>
-                </div>
-                <div className="flex w-full gap-5 pl-32 pr-32  ">
-                    <div className="border w-full h-60 p-5 flex flex-col gap-y-10">
-                        <div>
-                            <h1 className="text-4xl">New Customer</h1>
-                            <span className="text-[#aeb3b2]">Register Account</span>
-                            <p className="text-[#888888]">By creating an account you will be able to shop faster, be up to date on an order's status, and keep track of the orders you have previously made.</p>
-                        </div>
-                        <Link to={"/Singup"}><button className="w-30 h-10 bg-black text-white">continue</button></Link>
+            <Section>
+                <Container>
+                    <ScrollReveal>
+                        <nav className="mb-8 text-sm text-[var(--color-text-muted)]">
+                            <Link to="/" className="hover:text-[var(--color-text-primary)] transition-colors">Home</Link>
+                            <span className="mx-2">›</span>
+                            <span className="text-[var(--color-text-primary)]">Account</span>
+                        </nav>
+                    </ScrollReveal>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10">
+                        {/* New Customer */}
+                        <ScrollReveal>
+                            <div className="border border-[var(--color-border)] rounded-[var(--radius-xl)] p-6 md:p-8 h-full flex flex-col">
+                                <h2 className="heading-2 mb-2">New Customer</h2>
+                                <span className="text-small mb-3">Register Account</span>
+                                <p className="text-body text-sm mb-6 flex-1">
+                                    By creating an account you will be able to shop faster, be up to date on an order's status, and keep track of the orders you have previously made.
+                                </p>
+                                <Link to="/Singup">
+                                    <button className="btn btn-primary">Continue</button>
+                                </Link>
+                            </div>
+                        </ScrollReveal>
+
+                        {/* Reset Password */}
+                        <ScrollReveal delay={0.1}>
+                            <div className="border border-[var(--color-border)] rounded-[var(--radius-xl)] p-6 md:p-8">
+                                <h2 className="heading-2 mb-2">Reset Your Password</h2>
+                                <span className="text-small mb-6 block">We will send you an email to reset your password.</span>
+
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="label">Email</label>
+                                        <input className="input" type="email" placeholder="your@email.com" />
+                                    </div>
+                                    <div className="flex items-center gap-4 pt-2">
+                                        <button className="btn btn-primary">Submit</button>
+                                        <span className="text-small">or</span>
+                                        <Link to="/Signin" className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-brand)] transition-colors">Cancel</Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </ScrollReveal>
                     </div>
-                    <div className="border w-full h-100 p-10 flex flex-col gap-y-2 ">
-                        <h3 className="text-4xl">Returning Customer</h3>
-                        <span className="text-[#aeb3b2]">I am a returning customer</span>
-                        <h3  className="text-4xl">Reset your password</h3>
-                        <span className="text-[#aeb3b2]">We will send you an email to reset your password.</span>
-                        
-                        <label htmlFor="">Email</label>
-                        <input className="p-2 border" type="email" placeholder="Email" />
-                        <div className="flex gap-5 items-center">
-                            <button className="w-30 h-10 bg-black text-white">SIGN IN </button>
-                            <span>or</span>
-                            <Link to={"/Signin"} ><p className="hover:text-[#e65540]">cancel</p></Link>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                </Container>
+            </Section>
+
             <Footer />
-            
-        </div>
+        </PageWrapper>
     );
 }
 

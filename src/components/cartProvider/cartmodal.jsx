@@ -1,62 +1,70 @@
-// components/CartModal/CartModal.jsx
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CartModal({ product, onClose }) {
-  // Auto-close after 3 seconds
   useEffect(() => {
-    const timer = setTimeout(() => {
-      onClose();
-    }, 3000);
-
+    const timer = setTimeout(() => onClose(), 3500);
     return () => clearTimeout(timer);
   }, [onClose]);
 
+  // Lock body scroll
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 relative animate-fadeIn">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 10 }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="bg-white rounded-[var(--radius-xl)] p-8 max-w-sm w-full relative shadow-[var(--shadow-xl)]"
+          onClick={(e) => e.stopPropagation()}
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-
-        {/* Success Icon */}
-        <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-            <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-        </div>
-
-        {/* Product Info */}
-        <h3 className="text-xl font-bold text-center text-gray-900 mb-2">
-          {product.title}
-        </h3>
-        <p className="text-center text-gray-600 mb-6">is added to cart!</p>
-
-        {/* OK Button */}
-        <Link to="/cart">
+          {/* Close */}
           <button
             onClick={onClose}
-            className="w-full bg-red-500 text-white py-3 rounded-full hover:bg-red-600 transition-colors font-medium"
+            className="absolute top-4 right-4 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
+            aria-label="Close"
           >
-            VIEW CART
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
-        </Link>
 
-        <button
-          onClick={onClose}
-          className="w-full mt-3 bg-gray-200 text-gray-700 py-3 rounded-full hover:bg-gray-300 transition-colors font-medium"
-        >
-          CONTINUE SHOPPING
-        </button>
-      </div>
-    </div>
+          {/* Success Icon */}
+          <div className="flex justify-center mb-5">
+            <div className="w-14 h-14 rounded-full bg-green-50 flex items-center justify-center">
+              <svg className="w-7 h-7 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+          </div>
+
+          <h3 className="heading-3 text-center mb-1">{product.title}</h3>
+          <p className="text-center text-[var(--color-text-muted)] text-sm mb-6">has been added to your cart</p>
+
+          <Link to="/cart">
+            <button onClick={onClose} className="btn btn-brand w-full mb-3">
+              VIEW CART
+            </button>
+          </Link>
+          <button onClick={onClose} className="btn btn-secondary w-full">
+            CONTINUE SHOPPING
+          </button>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

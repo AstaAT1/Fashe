@@ -1,127 +1,129 @@
-import { useState } from "react";
-import { images } from "../../constants";
-
+import { useState, useRef, useEffect } from "react";
 import { useCart } from "../cartProvider/CartProvider";
 import CartModal from "../cartProvider/cartmodal";
-
-
-const products = [
-  { id: 1, img: images.shops.shop6, title: "Boxy T-Shirt with Roll Sleeve", price: "$20.00" },
-  { id: 2, img: images.shops.shop7, title: "Boxy T-Shirt with Roll Sleeve", price: "$20.00" },
-  { id: 3, img: images.shops.shop8, title: "Boxy T-Shirt with Roll Sleeve", price: "$20.00" },
-  { id: 4, img: images.shops.shopy3, title: "Boxy T-Shirt with Roll Sleeve", price: "$20.00" },
-  { id: 5, img: images.shops.shopy4, title: "Boxy T-Shirt with Roll Sleeve", price: "$20.00" },
-  { id: 6, img: images.shops.shopy5, title: "Boxy T-Shirt with Roll Sleeve", price: "$20.00" },
-  { id: 7, img: images.shops.shopi, title: "Boxy T-Shirt with Roll Sleeve", price: "$20.00" },
-  { id: 8, img: images.shops.shop, title: "Boxy T-Shirt with Roll Sleeve", price: "$20.00" },
-];
+import Container from "../ui/Container";
+import Section from "../ui/Section";
+import ScrollReveal from "../ui/ScrollReveal";
+import { products } from "../../data/products";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function ProductCarousel() {
-  const [index, setIndex] = useState(0);
   const [hoveredId, setHoveredId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [addedProduct, setAddedProduct] = useState(null);
-
   const { addToCart } = useCart();
+  const carouselRef = useRef(null);
 
-  const next = () => {
-    if (index < 1) {
-      setIndex(index + 1);
-    } else {
-      setIndex(0);
-    }
-  };
-
-  const prev = () => {
-    if (index > 0) {
-      setIndex(index - 1);
-    } else {
-      setIndex(1);
-    }
-  };
-
-  const handleAddToCart = (product) => {
+  const handleAddToCart = (e, product) => {
+    e.preventDefault(); // Prevent Link navigation
+    e.stopPropagation();
     addToCart(product);
     setAddedProduct(product);
     setShowModal(true);
   };
 
+  const scrollLeft = () => {
+    if (carouselRef.current) {
+      carouselRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (carouselRef.current) {
+      carouselRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+    }
+  };
+
   return (
-    <div className="relative bg-gray-100 overflow-hidden">
-      {/* Cart Modal */}
+    <Section bg="bg-[var(--color-surface-muted)]">
       {showModal && (
-        <CartModal
-          product={addedProduct}
-          onClose={() => setShowModal(false)}
-        />
+        <CartModal product={addedProduct} onClose={() => setShowModal(false)} />
       )}
 
-      {/* Slides */}
-      <div className="relative bg-gray-100 py-16 px-20 overflow-hidden">
-        <div className="relative bg-gray-100 py-16 px-20 overflow-hidden">
-          <div
-            className="flex gap-10 transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(-${index * 100}%)`, width: '200%' }}
-          >
-            {products.map((product) => (
-              <div
-                key={product.id}
-                className="shrink-0"
-                style={{ width: 'calc((50% - 15px) / 4)' }}
-                onMouseEnter={() => setHoveredId(product.id)}
-                onMouseLeave={() => setHoveredId(null)}
+      <Container>
+        <ScrollReveal>
+          <div className="flex items-center justify-between mb-10">
+            <h2 className="heading-2">Our Products</h2>
+            <div className="flex gap-2">
+              <button
+                onClick={scrollLeft}
+                className="w-10 h-10 rounded-full border border-[var(--color-border)] flex items-center justify-center text-[var(--color-text-secondary)] hover:border-[var(--color-text-primary)] hover:text-[var(--color-text-primary)] transition-all duration-200"
+                aria-label="Previous"
               >
-                <div className="w-full h-96 overflow-hidden bg-gray-200 relative">
-                  <img
-                    src={product.img}
-                    alt={product.title}
-                    className="w-full h-full object-cover"
-                  />
+                &#10094;
+              </button>
+              <button
+                onClick={scrollRight}
+                className="w-10 h-10 rounded-full border border-[var(--color-border)] flex items-center justify-center text-[var(--color-text-secondary)] hover:border-[var(--color-text-primary)] hover:text-[var(--color-text-primary)] transition-all duration-200"
+                aria-label="Next"
+              >
+                &#10095;
+              </button>
+            </div>
+          </div>
+        </ScrollReveal>
 
-                  {/* ADD TO CART Button */}
-                  <button
-                    onClick={() => handleAddToCart(product)}
-                    className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black text-white px-8 py-3 rounded-full font-medium transition-all duration-300 hover:bg-gray-800"
-                    style={{
-                      opacity: hoveredId === product.id ? 1 : 0,
-                      transform: hoveredId === product.id
-                        ? 'translateX(-50%) translateY(0)'
-                        : 'translateX(-50%) translateY(20px)'
-                    }}
+        <div className="relative">
+          <div
+            ref={carouselRef}
+            className="flex gap-5 overflow-x-auto snap-x snap-mandatory hide-scroll-bar pb-4"
+            style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
+          >
+            {products.map((product, i) => (
+              <ScrollReveal key={product.id} delay={i * 0.05} className="shrink-0 w-[260px] sm:w-[280px] snap-start">
+                <Link to={`/Details/${product.id}`} className="block group">
+                  <div
+                    className="relative bg-[var(--color-surface-subtle)] overflow-hidden rounded-[var(--radius-lg)] aspect-[3/4]"
+                    onMouseEnter={() => setHoveredId(product.id)}
+                    onMouseLeave={() => setHoveredId(null)}
                   >
-                    ADD TO CART
-                  </button>
-                </div>
-
-                <div className="mt-6">
-                  <h3 className="text-gray-600 text-sm">
-                    {product.title}
-                  </h3>
-                  <p className="mt-2 text-gray-900 font-medium">
-                    {product.price}
-                  </p>
-                </div>
-              </div>
+                    {product.sale && (
+                      <span className="absolute top-3 left-3 bg-[var(--color-brand)] text-white text-[11px] font-semibold px-3 py-1 rounded-full z-10">
+                        Sale
+                      </span>
+                    )}
+                    <motion.img
+                      src={product.img}
+                      alt={product.title}
+                      className="w-full h-full object-cover"
+                      animate={{ scale: hoveredId === product.id ? 1.04 : 1 }}
+                      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                      loading="lazy"
+                    />
+                    <button
+                      onClick={(e) => handleAddToCart(e, product)}
+                      className="absolute bottom-4 left-1/2 btn btn-primary text-xs w-[80%] max-w-[200px]"
+                      style={{
+                        opacity: hoveredId === product.id ? 1 : 0,
+                        transform: hoveredId === product.id
+                          ? 'translateX(-50%) translateY(0)'
+                          : 'translateX(-50%) translateY(12px)',
+                        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                      }}
+                    >
+                      ADD TO CART
+                    </button>
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="text-sm font-medium text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)] transition-colors line-clamp-1">{product.title}</h3>
+                    <div className="mt-1 flex items-center gap-2">
+                      {product.oldPrice ? (
+                        <>
+                          <span className="text-sm text-[var(--color-text-muted)] line-through">{product.oldPrice}</span>
+                          <span className="text-sm font-semibold text-[var(--color-brand)]">{product.price}</span>
+                        </>
+                      ) : (
+                        <span className="text-sm font-medium text-[var(--color-text-primary)]">{product.price}</span>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              </ScrollReveal>
             ))}
           </div>
         </div>
-      </div>
-
-      {/* Left Arrow */}
-      <button
-        onClick={prev}
-        className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black text-3xl z-10"
-      >
-        &#10094;
-      </button>
-
-      {/* Right Arrow */}
-      <button
-        onClick={next}
-        className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black text-3xl z-10"
-      >
-        &#10095;
-      </button>
-    </div>
+      </Container>
+    </Section>
   );
 }

@@ -1,61 +1,91 @@
-import { FaFacebookF, FaGooglePlusG, FaInstagram, FaPinterest, FaTwitter } from "react-icons/fa";
-
+import { FaFacebookF, FaInstagram, FaPinterest, FaTwitter } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import Container from "../ui/Container";
 
 function Footer() {
     return (
-        <div className="w-full h-150 bg-[#f0f0f0] p-20 flex flex-col  gap-y-30   ">
-            <div className="flex justify-between ">
-                <div className="flex flex-col gap-y-10">
-                    <h3 className="text-black font-bold">GET IN TOUCH</h3>
-                    <p className="w-120">Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or call us on (+1) 96 716 6879</p>
-                    <div className="flex gap-5">
-                        <a className="text-2xl hover:text-[#e65540]" href="">{<FaFacebookF />}</a>
-                        <a className="text-2xl hover:text-[#e65540]" href="">{<FaTwitter />}</a>
-                        <a className="text-2xl hover:text-[#e65540]" href="">{<FaPinterest />}</a>
-                        <a className="text-2xl hover:text-[#e65540]" href="">{<FaGooglePlusG />}</a>
-                        <a className="text-2xl hover:text-[#e65540]" href="">{< FaInstagram />}</a>
+        <footer className="bg-[var(--color-surface-subtle)] border-t border-[var(--color-border-muted)]">
+            <Container className="pt-16 pb-10 md:pt-20 md:pb-12">
+                {/* Footer Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
+                    {/* Get In Touch */}
+                    <div className="sm:col-span-2 lg:col-span-2">
+                        <h3 className="heading-3 mb-4">Get In Touch</h3>
+                        <p className="text-body mb-6 max-w-sm">
+                            Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or call us on (+1) 96 716 6879
+                        </p>
+                        <div className="flex items-center gap-3">
+                            {[FaFacebookF, FaTwitter, FaPinterest, FaInstagram].map((Icon, i) => (
+                                <a
+                                    key={i}
+                                    href="#"
+                                    className="w-9 h-9 rounded-full bg-[var(--color-border-muted)] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-brand)] hover:text-white transition-all duration-200"
+                                    aria-label={Icon.name}
+                                >
+                                    <Icon className="w-3.5 h-3.5" />
+                                </a>
+                            ))}
+                        </div>
                     </div>
-                </div>
-                <div className="flex flex-col gap-y-10">
-                    <h3 className="text-black font-bold">CATEGORIES</h3>
-                    <div className="flex flex-col gap-y-5">
-                        <a className=" hover:text-[#e65540]" href="">Men</a>
-                        <a className=" hover:text-[#e65540]" href="">Women</a>
-                        <a className=" hover:text-[#e65540]" href="">Dresses</a>
-                        <a className=" hover:text-[#e65540]" href="">Sunglasses</a>
-                    </div>
-                </div>
-                <div className="flex flex-col gap-y-10">
-                    <h3 className="text-black font-bold">CATEGORIES</h3>
-                    <div className="flex flex-col gap-y-5">
-                        <a className=" hover:text-[#e65540]" href="">Search</a>
-                        <a className=" hover:text-[#e65540]" href="">About Us</a>
-                        <a className=" hover:text-[#e65540]" href="">Contact Us</a>
-                        <a className=" hover:text-[#e65540]" href="">Returns</a>
-                    </div>
-                </div>
-                <div className="flex flex-col gap-y-10">
-                    <h3 className="text-black font-bold">CATEGORIES</h3>
-                    <div className="flex flex-col gap-y-5">
-                        <a className=" hover:text-[#e65540]" href="">Track Order</a>
-                        <a className=" hover:text-[#e65540]" href="">Returns</a>
-                        <a className=" hover:text-[#e65540]" href="">Shipping</a>
-                        <a className=" hover:text-[#e65540]" href="">FAQs</a>
-                    </div>
-                </div>
-                <div className="flex flex-col gap-y-10">
-                    <h3 className="text-black font-bold">NEWSLETTER</h3>
-                    <div className="flex flex-col gap-5">
-                        <input className="w-60 border-b-2 p-1" type="text" placeholder="Email Addres" />
-                        <button className="w-45 h-13 rounded-full bg-black text-white text-2xl">Subscribe</button>
-                    </div>
-                </div>
-            </div>
-            <div className=" flex justify-center ">
-                <p>Copyright © 2022 Shopify Theme Developed by MassTechnologist All rights reserved.</p>
-            </div>
 
-        </div>
+                    {/* Categories */}
+                    <div>
+                        <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--color-text-primary)] mb-4">
+                            Categories
+                        </h3>
+                        <ul className="space-y-2.5">
+                            {["Men", "Women", "Dresses", "Sunglasses"].map((item) => (
+                                <li key={item}>
+                                    <Link to="/Shop" className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-brand)] transition-colors duration-150">
+                                        {item}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Links */}
+                    <div>
+                        <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--color-text-primary)] mb-4">
+                            Help
+                        </h3>
+                        <ul className="space-y-2.5">
+                            {["Track Order", "Returns", "Shipping", "FAQs"].map((item) => (
+                                <li key={item}>
+                                    <a href="#" className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-brand)] transition-colors duration-150">
+                                        {item}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Newsletter */}
+                    <div>
+                        <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--color-text-primary)] mb-4">
+                            Newsletter
+                        </h3>
+                        <div className="flex flex-col gap-3">
+                            <input
+                                className="input"
+                                type="email"
+                                placeholder="Email address"
+                            />
+                            <button className="btn btn-primary w-full">
+                                Subscribe
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Bottom Bar */}
+                <div className="mt-14 pt-6 border-t border-[var(--color-border)]">
+                    <p className="text-small text-center">
+                        © {new Date().getFullYear()} FASHE. All rights reserved.
+                    </p>
+                </div>
+            </Container>
+        </footer>
     );
 }
 

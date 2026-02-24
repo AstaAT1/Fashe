@@ -1,424 +1,299 @@
 import Footer from "../components/Footer/Footer";
 import Nav_bar from "../components/Nav_bar/Nav_bar";
 import { Link } from "react-router-dom";
-import 'flowbite';
-import { motion } from "framer-motion";
-
-
-
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 import { images } from "../constants";
-import ProductCarousel from "../components/carousel/productcarousel";
+import ProductCarousel from "../components/carousel/ProductCarousel";
+import PageWrapper from "../components/ui/PageWrapper";
+import Container from "../components/ui/Container";
+import Section from "../components/ui/Section";
+import ScrollReveal from "../components/ui/ScrollReveal";
 
 function Home() {
+    const [currentHero, setCurrentHero] = useState(0);
+    const heroSlides = [images.carousel.carousel1, images.carousel.carousel2, images.carousel.carousel3];
 
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentHero((prev) => (prev === heroSlides.length - 1 ? 0 : prev + 1));
+        }, 5000);
+        return () => clearInterval(timer);
+    }, [heroSlides.length]);
 
+    const nextHero = () => setCurrentHero((p) => (p === heroSlides.length - 1 ? 0 : p + 1));
+    const prevHero = () => setCurrentHero((p) => (p === 0 ? heroSlides.length - 1 : p - 1));
 
-
-    const back = {
-        backgroundImage: `url(${images.banner.banner8})`,
+    const bgStyle = (img) => ({
+        backgroundImage: `url(${img})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundRepeat: "no-repeat"
-    }
+        backgroundRepeat: "no-repeat",
+    });
 
-    const back1 = {
-        backgroundImage: `url(${images.cart.card1})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat"
-    }
-    const back2 = {
-        backgroundImage: `url(${images.cart.card2})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat"
-    }
-    const back3 = {
-        backgroundImage: `url(${images.cart.card3})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat"
-    }
-    const back4 = {
-        backgroundImage: `url(${images.cart.card4})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat"
-    }
-    const back5 = {
-        backgroundImage: `url(${images.cart.card5})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat"
-    }
-    const back6 = {
-        backgroundImage: `url(${images.cart.card6})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat"
-    }
-
-    const glases = {
-        backgroundImage: `url(${images.shops.shop})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat"
-    }
-
-    const blog1 = {
-        backgroundImage: `url(${images.blog.blog1})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat"
-    }
-    const blog2 = {
-        backgroundImage: `url(${images.blog.blog2})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat"
-    }
-    const blog3 = {
-        backgroundImage: `url(${images.blog.blog3})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat"
-    }
-
-
-
-
-
-
-    const animation = {
+    const hoverAnim = {
         initial: { backgroundSize: "100% 100%" },
         animate: { backgroundSize: "100% 100%" },
         whileHover: { backgroundSize: "110% 110%" },
-        transition: { duration: 0.4, ease: "easeOut" }
+        transition: { duration: 0.8, ease: "easeOut" },
     };
 
-
     return (
-        <div >
+        <PageWrapper>
             <Nav_bar />
-            {/* carousel section */}
-            <div id="animation-carousel" className="relative w-full" data-carousel="static">
-                {/* Carousel wrapper */}
-                <div className="relative h-56 overflow-hidden rounded-base md:h-96">
 
-                    {/* Item 1 */}
-                    <div className="hidden duration-200 ease-linear" data-carousel-item>
+            {/* ─── HERO CAROUSEL ─── */}
+            <div className="relative w-full h-[60vh] md:h-[75vh] lg:h-[85vh] overflow-hidden bg-black">
+                <AnimatePresence initial={false}>
+                    <motion.div
+                        key={currentHero}
+                        initial={{ opacity: 0, scale: 1.05 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.8, ease: "easeInOut" }}
+                        className="absolute inset-0"
+                    >
                         <img
-                            src={images.carousel.carousel1}
-                            className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                            alt="carousel-1"
+                            src={heroSlides[currentHero]}
+                            className="w-full h-full object-cover"
+                            alt={`carousel-${currentHero + 1}`}
                         />
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center z-10">
-                            <p className="text-sm md:text-base font-light tracking-wider mb-4">
-                                Women Collection 2018
-                            </p>
-                            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-wider mb-8">
-                                NEW ARRIVALS
-                            </h1>
-                            <Link to={"/Homeshop"}><button className="bg-white text-black px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition-colors">
-                                SHOP NOW
-                            </button></Link>
-                            
-                        </div>
-                    </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                    </motion.div>
+                </AnimatePresence>
 
-                    {/* Item 2 */}
-                    <div className="hidden duration-200 ease-linear" data-carousel-item>
-                        <img
-                            src={images.carousel.carousel2}
-                            className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                            alt="carousel-2"
-                        />
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center z-10">
-                            <p className="text-sm md:text-base font-light tracking-wider mb-4">
-                                Women Collection 2018
-                            </p>
-                            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-wider mb-8">
-                                NEW ARRIVALS
-                            </h1>
-                            <Link to={"/Homeshop"}><button className="bg-white text-black px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition-colors">
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center z-10 px-4 pointer-events-none">
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+                        className="section-subtitle text-white/90 mb-4 tracking-[0.3em] uppercase text-xs md:text-sm"
+                    >
+                        Women Collection 2018
+                    </motion.p>
+                    <motion.h1
+                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+                        className="heading-display text-white mb-8 tracking-wider text-4xl md:text-6xl"
+                    >
+                        NEW ARRIVALS
+                    </motion.h1>
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="pointer-events-auto">
+                        <Link to="/Shop">
+                            <button className="btn bg-white text-[var(--color-text-primary)] hover:bg-white/90 btn-lg px-8">
                                 SHOP NOW
-                            </button></Link>
-                            
-                        </div>
-                    </div>
-
-                    {/* Item 3 */}
-                    <div className="hidden duration-200 ease-linear" data-carousel-item="active">
-                        <img
-                            src={images.carousel.carousel3}
-                            className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                            alt="carousel-3"
-                        />
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center z-10">
-                            <p className="text-sm md:text-base font-light tracking-wider mb-4">
-                                Women Collection 2018
-                            </p>
-                            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-wider mb-8">
-                                NEW ARRIVALS
-                            </h1>
-                            <Link to={"/Homeshop"}><button className="bg-white text-black px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition-colors">
-                                SHOP NOW
-                            </button></Link>
-                            
-                        </div>
-                    </div>
-
+                            </button>
+                        </Link>
+                    </motion.div>
                 </div>
 
-                {/* Previous Button */}
-                <button
-                    type="button"
-                    className="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-                    data-carousel-prev
-                >
-                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-base bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                        <svg
-                            className="w-5 h-5 text-white rtl:rotate-180"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="m15 19-7-7 7-7"
-                            />
+                {/* Carousel Controls */}
+                <div className="absolute inset-0 flex items-center justify-between px-4 md:px-8 pointer-events-none z-20">
+                    <button
+                        onClick={prevHero}
+                        className="pointer-events-auto w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center hover:bg-white/30 transition-all duration-300 group border border-white/20"
+                        aria-label="Previous"
+                    >
+                        <svg className="w-5 h-5 text-white group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m15 19-7-7 7-7" />
                         </svg>
-                        <span className="sr-only">Previous</span>
-                    </span>
-                </button>
+                    </button>
+                    <button
+                        onClick={nextHero}
+                        className="pointer-events-auto w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center hover:bg-white/30 transition-all duration-300 group border border-white/20"
+                        aria-label="Next"
+                    >
+                        <svg className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m9 5 7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
 
-                {/* Next Button */}
-                <button
-                    type="button"
-                    className="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-                    data-carousel-next
-                >
-                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-base bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                        <svg
-                            className="w-5 h-5 text-white rtl:rotate-180"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="m9 5 7 7-7 7"
-                            />
-                        </svg>
-                        <span className="sr-only">Next</span>
-                    </span>
-                </button>
+                {/* Carousel Indicators */}
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+                    {heroSlides.map((_, i) => (
+                        <button
+                            key={i}
+                            onClick={() => setCurrentHero(i)}
+                            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === currentHero ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/70'}`}
+                            aria-label={`Go to slide ${i + 1}`}
+                        />
+                    ))}
+                </div>
             </div>
 
-            {/* section 2  */}
-
-            <section className="container mx-auto p-10 pt-3">
-                <div className="w-full h-200 flex gap-2">
-
-                    {/* Column 1 */}
-                    <div className="w-1/3 h-full flex flex-col gap-3">
-
-                        <div className="w-full h-[60%]">
-                            <motion.div {...animation} className="flex items-center justify-center h-full w-full relative" style={{
-                                ...back1, backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center"
-                            }}>
-
-                                <Link to={"/Shop"}><button className="bg-white w-40 h-12 text-lg cursor-pointer hover:text-white hover:bg-red-500 absolute bottom-10 left-1/2 -translate-x-1/2">
-                                    Dresses
-                                </button></Link>
+            {/* ─── CATEGORY GRID ─── */}
+            <Section>
+                <Container>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 auto-rows-[200px] md:auto-rows-[240px] lg:auto-rows-[260px]">
+                        {/* Col 1 - Tall */}
+                        <ScrollReveal delay={0} className="row-span-2">
+                            <motion.div {...hoverAnim} className="relative w-full h-full rounded-[var(--radius-lg)] overflow-hidden" style={bgStyle(images.cart.card1)}>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+                                <Link to="/Shop"><button className="btn bg-white/90 backdrop-blur-sm text-[var(--color-text-primary)] hover:bg-white absolute bottom-6 left-1/2 -translate-x-1/2 min-w-[140px]">Dresses</button></Link>
                             </motion.div>
-                        </div>
+                        </ScrollReveal>
 
-                        <div className="w-full h-[40%]">
-                            <motion.div {...animation} className="flex items-center justify-center h-full w-full relative" style={{
-                                ...back4, backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center"
-                            }}>
-                                <Link to={"/Shop"}><button className="bg-white w-40 h-12 text-lg cursor-pointer hover:text-white hover:bg-red-500 absolute bottom-6 left-1/2 -translate-x-1/2">
-                                    Sunglasses
-                                </button></Link>
-                                
+                        {/* Col 2 - Short */}
+                        <ScrollReveal delay={0.06}>
+                            <motion.div {...hoverAnim} className="relative w-full h-full rounded-[var(--radius-lg)] overflow-hidden" style={bgStyle(images.cart.card2)}>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+                                <Link to="/Shop"><button className="btn bg-white/90 backdrop-blur-sm text-[var(--color-text-primary)] hover:bg-white absolute bottom-6 left-1/2 -translate-x-1/2 min-w-[140px]">Watches</button></Link>
                             </motion.div>
-                        </div>
+                        </ScrollReveal>
 
+                        {/* Col 3 - Tall */}
+                        <ScrollReveal delay={0.12} className="row-span-2">
+                            <motion.div {...hoverAnim} className="relative w-full h-full rounded-[var(--radius-lg)] overflow-hidden" style={bgStyle(images.cart.card3)}>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+                                <Link to="/Shop"><button className="btn bg-white/90 backdrop-blur-sm text-[var(--color-text-primary)] hover:bg-white absolute bottom-6 left-1/2 -translate-x-1/2 min-w-[140px]">Bags</button></Link>
+                            </motion.div>
+                        </ScrollReveal>
+
+                        {/* Col 1 - Short (fills second row) */}
+                        <ScrollReveal delay={0.18}>
+                            <motion.div {...hoverAnim} className="relative w-full h-full rounded-[var(--radius-lg)] overflow-hidden" style={bgStyle(images.cart.card4)}>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+                                <Link to="/Shop"><button className="btn bg-white/90 backdrop-blur-sm text-[var(--color-text-primary)] hover:bg-white absolute bottom-6 left-1/2 -translate-x-1/2 min-w-[140px]">Sunglasses</button></Link>
+                            </motion.div>
+                        </ScrollReveal>
+
+                        {/* Col 2 - Tall (spans rows 2-3) */}
+                        <ScrollReveal delay={0.24} className="row-span-2">
+                            <motion.div {...hoverAnim} className="relative w-full h-full rounded-[var(--radius-lg)] overflow-hidden" style={bgStyle(images.cart.card5)}>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+                                <Link to="/Shop"><button className="btn bg-white/90 backdrop-blur-sm text-[var(--color-text-primary)] hover:bg-white absolute bottom-6 left-1/2 -translate-x-1/2 min-w-[140px]">Footwear</button></Link>
+                            </motion.div>
+                        </ScrollReveal>
+
+                        {/* Col 3 - Short (fills third row) */}
+                        <ScrollReveal delay={0.3}>
+                            <motion.div {...hoverAnim} className="relative w-full h-full rounded-[var(--radius-lg)] overflow-hidden" style={bgStyle(images.cart.card6)}>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+                                <Link to="/Shop"><button className="btn bg-white/90 backdrop-blur-sm text-[var(--color-text-primary)] hover:bg-white absolute bottom-6 left-1/2 -translate-x-1/2 min-w-[140px]">Accessories</button></Link>
+                            </motion.div>
+                        </ScrollReveal>
                     </div>
+                </Container>
+            </Section>
 
-                    {/* Column 2 */}
-                    <div className="w-1/3 h-full flex flex-col gap-3">
-
-                        <div className="w-full h-[40%]">
-                            <motion.div {...animation} className="flex items-center justify-center h-full w-full relative" style={{
-                                ...back2, backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center"
-                            }}>
-                                <Link to={"/Shop"}><button className="bg-white w-40 h-12 text-lg cursor-pointer hover:text-white hover:bg-red-500 absolute bottom-6 left-1/2 -translate-x-1/2" >
-                                    Watches
-                                </button></Link>
-                                
-                            </motion.div>
-                        </div>
-
-                        <div className="w-full h-[60%]">
-                            <motion.div {...animation} className="flex items-center justify-center h-full w-full relative" style={{
-                                ...back5, backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center"
-                            }}>
-                                <Link to={"/Shop"}><button className="bg-white w-40 h-12 text-lg cursor-pointer hover:text-white hover:bg-red-500 absolute bottom-10 left-1/2 -translate-x-1/2" >
-                                    Footwear
-                                </button></Link>
-                                
-                            </motion.div>
-                        </div>
-
-                    </div>
-
-                    {/* Column 3 */}
-                    <div className="w-1/3 h-full flex flex-col gap-3">
-
-                        <div className="w-full h-[60%]">
-                            <motion.div {...animation} className="flex items-center justify-center h-full w-full relative" style={{
-                                ...back3, backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center"
-                            }}>
-                                    <Link to={"Shop"}> <button className="bg-white w-40 h-12 text-lg cursor-pointer hover:text-white hover:bg-red-500 absolute bottom-10 left-1/2 -translate-x-1/2" >
-                                    Bags
-                                </button></Link>
-                                
-                            </motion.div>
-                        </div>
-
-                        <div className="w-full h-[40%]">
-                            <motion.div {...animation} className="flex items-center justify-center h-full w-full relative" style={{
-                                ...back6, backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center"
-                            }}>
-                                <Link to={"/Shop"}><button className="bg-white w-40 h-12 text-lg cursor-pointer hover:text-white hover:bg-red-500 absolute bottom-6 left-1/2 -translate-x-1/2" >
-                                    Accessories
-                                </button></Link>
-                                
-                            </motion.div>
-                        </div>
-
-                    </div>
-
-                </div>
-            </section>
-
+            {/* ─── PRODUCT CAROUSEL ─── */}
             <ProductCarousel />
 
+            {/* ─── LOOKBOOK / PROMO SECTION ─── */}
+            <Section bg="bg-[var(--color-surface-muted)]">
+                <Container>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                        <ScrollReveal>
+                            <motion.div
+                                {...hoverAnim}
+                                className="relative h-[400px] md:h-[480px] rounded-[var(--radius-xl)] overflow-hidden flex flex-col items-center justify-center text-white"
+                                style={bgStyle(images.banner.banner8)}
+                            >
+                                <div className="absolute inset-0 bg-black/40 transition-colors duration-500 group-hover:bg-black/50" />
+                                <div className="relative z-10 text-center">
+                                    <p className="text-lg font-light tracking-wider mb-1">The Beauty</p>
+                                    <h2 className="heading-display text-white mb-6">Lookbook</h2>
+                                    <Link to="/Shop" className="text-sm font-medium text-white border-b border-white/50 hover:border-white pb-0.5 transition-colors">
+                                        View Collection
+                                    </Link>
+                                </div>
+                            </motion.div>
+                        </ScrollReveal>
 
-            {/* section 4 */}
-            <motion.section className=" w-full  bg-[#f2f2f2] p-10 pl-35 pr-35 flex gap-5  ">
-
-                <motion.div {...animation} className="w-full h-120  text-white flex flex-col items-center justify-center gap-y-5 " style={{
-                    ...back, backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center"
-                }}>
-                    <div className="flex flex-col items-center justify-center ">
-                        <h1 className="text-4xl ">The Beauty</h1>
-                        <p className="text-7xl">Lookbook</p>
+                        <ScrollReveal delay={0.1}>
+                            <motion.div
+                                {...hoverAnim}
+                                className="relative h-[400px] md:h-[480px] rounded-[var(--radius-xl)] overflow-hidden flex flex-col justify-end items-center p-8 md:p-10"
+                                style={bgStyle(images.shops.shop)}
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                                <div className="relative z-10 text-center text-white">
+                                    <p className="text-sm font-medium mb-1 text-white/90">Boxy T-Shirt with Roll Sleeve</p>
+                                    <p className="text-xl font-semibold mb-6">$20.00</p>
+                                    <div className="flex gap-3 justify-center">
+                                        {[
+                                            { val: "365", label: "days" },
+                                            { val: "08", label: "hrs" },
+                                            { val: "24", label: "mins" },
+                                            { val: "36", label: "secs" },
+                                        ].map((t) => (
+                                            <div key={t.label} className="w-16 h-16 md:w-[72px] md:h-[72px] border border-white/20 rounded-[var(--radius-lg)] bg-white/10 backdrop-blur-md flex flex-col justify-center items-center shadow-lg">
+                                                <span className="text-xl font-semibold leading-none mb-1">{t.val}</span>
+                                                <span className="text-[10px] uppercase tracking-wider opacity-80">{t.label}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </ScrollReveal>
                     </div>
-                    <Link><a className="hover:border-b-2 " href="">View Collection</a></Link>
-                </motion.div>
+                </Container>
+            </Section>
 
-                <motion.div {...animation} className="w-full h-120 flex flex-col justify-end items-center gap-y-5 p-10  " style={{
-                    ...glases, backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center"
-                }} >
-                    <Link><p>Boxy2 T-Shirt with Roll Sleeve</p></Link>
-                    <p>Rs.5,577.73</p>
-                    <div className="flex gap-5">
-                        <div className="w-20 h-20 border flex flex-col justify-center items-center">
-                            <p>-2600</p>
-                            <p>days</p>
+            {/* ─── BLOG SECTION ─── */}
+            <Section>
+                <Container>
+                    <ScrollReveal>
+                        <div className="text-center mb-12">
+                            <p className="section-subtitle mb-3">Latest News</p>
+                            <h2 className="heading-1">Our Blog</h2>
                         </div>
-                        <div className="w-20 h-20 border flex flex-col justify-center items-center">
-                            <p>-13</p>
-                            <p>hrs</p>
-                        </div>
-                        <div className="w-20 h-20 border flex flex-col justify-center items-center">
-                            <p>-4</p>
-                            <p>mins</p>
-                        </div>
-                        <div className="w-20 h-20 border flex flex-col justify-center items-center">
-                            <p>-56</p>
-                            <p>secs</p>
-                        </div>
+                    </ScrollReveal>
 
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {[images.blog.blog1, images.blog.blog2, images.blog.blog3].map((img, i) => (
+                            <ScrollReveal key={i} delay={i * 0.08}>
+                                <article className="group">
+                                    <Link to="/blog" className="block overflow-hidden rounded-[var(--radius-xl)] mb-5 relative">
+                                        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity z-10" />
+                                        <motion.img
+                                            src={img}
+                                            alt="Blog post"
+                                            className="w-full h-56 md:h-64 object-cover"
+                                            whileHover={{ scale: 1.05 }}
+                                            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                                            loading="lazy"
+                                        />
+                                    </Link>
+                                    <Link to="/blog">
+                                        <h3 className="heading-3 group-hover:text-[var(--color-brand)] transition-colors duration-200 mb-2">
+                                            Black Friday Guide: Best Sales & Discount Codes
+                                        </h3>
+                                    </Link>
+                                    <p className="text-small mb-3">by fashe-theme Admin on Dec 28, 2017</p>
+                                    <p className="text-body text-sm line-clamp-3">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sed turpis sed lorem dignissim vulputate nec cursus ante. Nunc sit...
+                                    </p>
+                                </article>
+                            </ScrollReveal>
+                        ))}
                     </div>
-                </motion.div>
+                </Container>
+            </Section>
 
-            </motion.section>
-
-            {/* section 5 */}
-
-            <section className="flex flex-col items-center gap-y-20 p-10">
-                <h1 className="text-3xl font-bold">Our Blog</h1>
-                <div className="w-full grid grid-cols-3 gap-10  pl-32 pr-32 ">
-                    <div className="flex flex-col gap-y-10  h-130  ">
-                        <motion.div {...animation} className="h-60" style={{ ...blog1 }}></motion.div>
-                        <div className="flex flex-col gap-y-5">
-                            <Link><h1 className="text-2xl font-bold hover:text-[#e65540]">Black Friday Guide: Best Sales & Discount Codes</h1></Link>
-                            <span>by fashe-theme Admin on Dec 28,2017</span>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sed turpis sed lorem dignissim vulputate nec cursus ante. Nunc sit...</p>
-                        </div>
+            {/* ─── INSTAGRAM / PERKS SECTION ─── */}
+            <Section bg="bg-[var(--color-surface-muted)] text-[var(--color-text-primary)]" className="!py-16">
+                <Container>
+                    <ScrollReveal>
+                        <h2 className="heading-3 text-center mb-12 tracking-wide">@ FOLLOW US ON INSTAGRAM</h2>
+                    </ScrollReveal>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-[var(--color-border)]">
+                        {[
+                            { title: "Free Delivery Worldwide", desc: "Mirum est notare quam littera gothica" },
+                            { title: "30 Days Return", desc: "Simply return within 30 days for an exchange" },
+                            { title: "Store Opening", desc: "Shop Online 24/7 or visit our stores" },
+                        ].map((perk, i) => (
+                            <ScrollReveal key={i} delay={i * 0.08}>
+                                <div className="flex flex-col items-center text-center px-6 py-4 md:py-0">
+                                    <h3 className="font-medium text-base mb-2">{perk.title}</h3>
+                                    <p className="text-sm text-[var(--color-text-muted)] max-w-xs">{perk.desc}</p>
+                                </div>
+                            </ScrollReveal>
+                        ))}
                     </div>
-                    <div className="flex flex-col gap-y-10  h-130 ">
-                        <motion.div {...animation} className="h-60" style={{ ...blog2 }}></motion.div>
-                        <div className="flex flex-col gap-y-5">
-                            <Link><h1 className="text-2xl font-bold hover:text-[#e65540]">Black Friday Guide: Best Sales & Discount Codes</h1></Link>
-                            <span>by fashe-theme Admin on Dec 28,2017</span>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sed turpis sed lorem dignissim vulputate nec cursus ante. Nunc sit...</p>
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-y-10  h-130 ">
-                        <motion.div {...animation} className="h-60" style={{ ...blog3 }}></motion.div>
-                        <div className="flex flex-col gap-y-5">
-                            <Link><h1 className="text-2xl font-bold hover:text-[#e65540]">Black Friday Guide: Best Sales & Discount Codes</h1></Link>
-                            <span>by fashe-theme Admin on Dec 28,2017</span>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sed turpis sed lorem dignissim vulputate nec cursus ante. Nunc sit...</p>
-                        </div>
-                    </div>
-                </div>
-
-            </section>
-
-            {/* section6 */}
-
-            <section className="flex flex-col items-center gap-y-25 p-10">
-                <h1 className="text-4xl font-bold">@ FOLLOW US ON INSTAGRAM</h1>
-                <div className="w-full h-30 flex gap-5">
-                    <div className="w-full h-30 flex flex-col justify-center items-center border-r-2">
-                        <h3>Free Delivery Worldwide</h3>
-                        <p>Mirum est notare quam littera gothica</p>
-                    </div>
-                    <div className="w-full h-30 flex flex-col justify-center items-center border-r-2 ">
-                        <h3>Free Delivery Worldwide</h3>
-                        <p>Mirum est notare quam littera gothica</p>
-                    </div>
-                    <div className="w-full h-30 flex flex-col justify-center items-center ">
-                        <h3>Free Delivery Worldwide</h3>
-                        <p>Mirum est notare quam littera gothica</p>
-                    </div>
-
-                </div>
-            </section>
-
+                </Container>
+            </Section>
 
             <Footer />
-        </div>
+        </PageWrapper>
     );
 }
 
