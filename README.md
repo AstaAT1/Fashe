@@ -1,16 +1,75 @@
-# React + Vite
+# FASHE Market
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A premium fashion e-commerce web app built with React, TypeScript, and modern tooling.
 
-Currently, two official plugins are available:
+![React](https://img.shields.io/badge/React-19-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue) ![Vite](https://img.shields.io/badge/Vite-7-purple) ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-teal)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Quick Start
 
-## React Compiler
+```bash
+npm install
+npm run dev       # → http://localhost:5173
+npm run build     # production build
+npm run preview   # preview production build
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+| Area | Technology |
+|---|---|
+| Framework | React 19 + TypeScript |
+| Build | Vite 7 |
+| Styling | TailwindCSS v4 (dark mode) |
+| State | Zustand (cart, wishlist, UI) |
+| Data Fetching | TanStack Query v5 |
+| Routing | React Router v7 (lazy routes) |
+| Animations | Framer Motion + GSAP |
+| Forms | React Hook Form + Zod |
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Project Structure
+
+```
+src/
+├── assets/image/          # Product & banner images
+├── components/
+│   ├── layout/            # Navbar, Footer, Layout
+│   ├── ui/                # Button, Input, Modal, Drawer, Toast, Skeleton, etc.
+│   └── product/           # ProductCard, ProductGrid, RatingStars, FiltersSidebar
+├── features/
+│   └── cart/              # CartDrawer
+├── pages/                 # Home, Shop, ProductDetails, Cart, Checkout, Auth, etc.
+├── services/              # Mock API layer + query keys
+├── store/                 # Zustand stores (cart, UI, wishlist)
+├── hooks/                 # useDebounce, useMediaQuery, useScrollLock, etc.
+├── types/                 # TypeScript interfaces
+├── data/                  # 24 products + 5 categories (mock data)
+├── utils/                 # formatCurrency, cn, etc.
+├── styles/                # TailwindCSS v4 design tokens
+├── App.tsx                # Routes with lazy loading
+└── main.tsx               # Entry point
+```
+
+## Pages
+
+- **Home** — Hero (GSAP word reveal), categories grid, bestsellers, banner CTAs, features bar
+- **Shop** — Filters (category, price, rating, stock), search with debounce, sort, pagination
+- **Product Details** — Image gallery with zoom, size/color variants, add-to-cart, related products
+- **Cart** — Quantity controls, remove with undo, order summary
+- **Checkout** — Multi-step form (shipping → payment → review → confirmation)
+- **Auth** — Login / Register / Forgot Password (front-end only)
+- **Wishlist** — Saved products view
+- **About / Contact / 404** — Informational pages
+
+## Key Design Decisions
+
+- **Zustand** over Context/Redux for minimal boilerplate + persistence middleware
+- **Mock API with delays** to simulate real loading states (skeletons, TanStack Query caching)
+- **Code splitting** via `React.lazy` — each page is its own chunk
+- **Dark mode** respects OS preference, persisted in localStorage
+- **`prefers-reduced-motion`** disables all animations when enabled
+- **Mobile-first** responsive design with Tailwind breakpoints
+
+## Data
+
+All data is mocked locally (no backend). Cart and wishlist persist via localStorage.
+24 products across 5 categories: Women, Men, Accessories, Shoes, Sale.
